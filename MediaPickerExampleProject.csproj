@@ -20,6 +20,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <EnableDefaultCssItems>false</EnableDefaultCssItems>
         <Nullable>enable</Nullable>
+		<MauiVersion>8.0.14</MauiVersion>
 
         <!-- Display name -->
         <ApplicationTitle>MediaPickerExampleProject</ApplicationTitle>
