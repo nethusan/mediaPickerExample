@@ -1,0 +1,57 @@
+﻿@page "/"
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<img src="imageSource" />
+
+<button @onclick="UploadImage">Upload Image with limited</button>
+
+
+@code {
+    private int currentCount = 0;
+
+    private string imageSource = string.Empty;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+
+    public async Task UploadImage()
+    {
+        PermissionStatus status = await CheckAndRequestPhotosPermission();
+        if (status == PermissionStatus.Granted || status == PermissionStatus.Limited)
+        {
+            var imageFile = await MediaPicker.PickPhotoAsync();
+            imageSource = "data:image/jpeg;base64," + ImageSource.FromStream(() => imageFile.OpenReadAsync().Result);
+        }
+    }
+
+    public async Task<PermissionStatus> CheckAndRequestPhotosPermission()
+    {
+        PermissionStatus status = await Permissions.CheckStatusAsync<Permissions.Photos>();
+        if (status == PermissionStatus.Granted)
+        {
+            return status;
+        }
+        if (status == PermissionStatus.Denied && DeviceInfo.Platform == DevicePlatform.iOS)
+        {
+            // Prompt the user to turn on in settings On iOS once a
+            // permission has been denied it may not be requested again from
+            // the application
+            return status;
+        }
+        if (Permissions.ShouldShowRationale<Permissions.Photos>())
+        {
+        }
+        status = await Permissions.RequestAsync<Permissions.Photos>();
+        return status;
+    }
+
+    protected override async void OnInitialized()
+    {
+        Console.WriteLine("Counter component initialized");
+    }
+}
